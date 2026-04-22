@@ -1,5 +1,5 @@
 # Scenario 2: Pi0 VLA + LIBERO via Ray Serve
-
+![LIBERO sim demo](media/libero_test.gif)
 A ~3B parameter Vision-Language-Action model ([pi0](https://huggingface.co/lerobot/pi0_libero_base)) served through Ray Serve, controlling a Franka arm in [LIBERO](https://libero-project.github.io/) tabletop manipulation tasks.
 
 ## Architecture
