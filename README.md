@@ -38,7 +38,7 @@ Demo time:       14.9s
 
 ## Expected task performance
 
-The architecture is proven end-to-end at 57ms latency. Task completion will follow once 6 normalization buffer keys are loaded into the model. With those buffers loaded, pi0 should approach published performance:
+The architecture is proven end-to-end at 57ms latency. pi0 should approach published performance:
 
 - [Pi0 paper (Physical Intelligence)](https://www.physicalintelligence.company/download/pi0.pdf)
 - [pi0_libero_base model card (HuggingFace)](https://huggingface.co/lerobot/pi0_libero_base)
