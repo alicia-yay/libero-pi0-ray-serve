@@ -17,6 +17,24 @@ import numpy as np
 import time
 import builtins
 
+# Monkey-patch Gemma attention to handle mismatched causal mask sizes
+import transformers.models.gemma.modeling_gemma as _gemma_mod
+
+_orig_eager_attn = _gemma_mod.eager_attention_forward
+
+def _patched_eager_attn(module, query, key, value, attention_mask, scaling, dropout=0.0, **kwargs):
+    import torch
+    attn_weights = torch.matmul(query, key.transpose(2, 3)) * scaling
+    if attention_mask is not None and attention_mask.shape[-1] == attn_weights.shape[-1]:
+        attn_weights = attn_weights + attention_mask
+    attn_weights = torch.nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query.dtype)
+    attn_weights = torch.nn.functional.dropout(attn_weights, p=dropout, training=module.training)
+    attn_output = torch.matmul(attn_weights, value)
+    return attn_output, attn_weights
+
+_gemma_mod.eager_attention_forward = _patched_eager_attn
+
+
 builtins.input = lambda *args, **kwargs: "n"
 
 
@@ -83,8 +101,8 @@ class Pi0PolicyServer:
 
             batch = self.preprocess(batch)
             output = self.policy.select_action(batch)
-            output = self.postprocess(output)
-            action = output["action"].cpu().numpy().flatten()
+            # output = self.postprocess(output)
+            action = output.cpu().numpy().flatten()[:7]
 
         latency_ms = (time.time() - t0) * 1000
         self._call_count += 1
