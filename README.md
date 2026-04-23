@@ -18,30 +18,6 @@ Pi0 controlling Franka arms in LIBERO — real VLA inference via Ray Serve:
 
 Modern robot policies like pi0 are **too large to co-locate with simulation** on the same GPU. This demo decouples them using Ray Serve:
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│                  Ray Cluster · 4× A10G · Anyscale            │
-│                                                              │
-│  ┌────────────┐  ┌────────────┐  ┌────────────┐             │
-│  │ SimWorker 1│  │ SimWorker 2│  │ SimWorker 3│  ← LIBERO   │
-│  │   A10G     │  │   A10G     │  │   A10G     │    envs     │
-│  │  256×256   │  │  256×256   │  │  256×256   │    render    │
-│  │  cameras   │  │  cameras   │  │  cameras   │    images    │
-│  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘             │
-│        │               │               │                     │
-│        └───────────────┼───────────────┘                     │
-│                        ▼                                     │
-│             ┌─────────────────────┐                          │
-│             │    Ray Serve RPC    │  ← routing, batching     │
-│             └──────────┬──────────┘                          │
-│                        ▼                                     │
-│             ┌─────────────────────┐                          │
-│             │  Pi0 Policy Server  │  ← 3.5B params, fp16    │
-│             │       A10G          │     images → 7d actions  │
-│             └─────────────────────┘                          │
-└──────────────────────────────────────────────────────────────┘
-```
-
 ![Architecture diagram](media/architecture.svg)
 
 The code change on the sim side is one line:
