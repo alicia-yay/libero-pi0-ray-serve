@@ -36,6 +36,12 @@ Total calls:     100
 Demo time:       14.9s
 ```
 
+## Expected task performance
+
+Per-task breakdown across the 10 LIBERO object tasks shows easier grasping tasks (orange juice, alphabet soup) reaching 85-90%, while harder tasks (butter, tomato sauce) land around 45-55%:
+
+![Per-task success rates](media/pi0_per_task_success.jpg)
+
 ## Quick Start
 
 ```bash
@@ -79,7 +85,7 @@ python run_demo.py --num-workers 2 --episodes 1 --max-steps 50
 
 | File | Purpose |
 |------|---------|
-| `policy_server.py` | Pi0 via Ray Serve + Gemma attention monkey-patch + PlaceholderPolicyServer |
+| `policy_server.py` | Pi0 via Ray Serve + Gemma attention+  PlaceholderPolicyServer |
 | `sim_worker.py` | Ray remote actor: LIBERO sim → cameras → policy RPC → actions → GIFs |
 | `run_demo.py` | Orchestrator: deploy policy → launch workers → run episodes → save results |
 | `test_libero.py` | Smoke test: one worker, random actions, 50 steps, saves GIF |
